@@ -93,13 +93,3 @@ Todos os eventos são registrados no canal `#anti-raid-logs` com:
 
 
 ✏️ **Nota:** Substitua `seu-usuario` e `SEU_TOKEN_AQUI` pelas suas informações reais antes de usar.  
-
----
-
-Esse README está:  
-✅ Totalmente em português  
-✅ Com formatação GitHub Markdown  
-✅ Com seções organizadas  
-✅ Com badges de status  
-✅ Com exemplos de configuração  
-✅ Com tabela de comandos  
