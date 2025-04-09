@@ -93,3 +93,6 @@ Todos os eventos são registrados no canal `#anti-raid-logs` com:
 
 
 ✏️ **Nota:** Substitua `seu-usuario` e `SEU_TOKEN_AQUI` pelas suas informações reais antes de usar.  
+
+## 📜 Licença  
+Este projeto está licenciado sob a **Apache License 2.0**. Consulte o arquivo [LICENSE](LICENSE) para detalhes.  
