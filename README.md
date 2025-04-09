@@ -1,6 +1,6 @@
 # JJK RedenBOT - Bot de Segurança para Discord  
 
-![Licença](https://img.shields.io/github/license/CodeMakersBrasil/JJK-RedenBOT?label=License&logo=apache&logoColor=red&color=blue&filename=LICENSE.txt)
+![Licença](https://img.shields.io/github/license/viniprati/JJK-RedenBOT?label=License&logo=apache&logoColor=red&color=blue)
 ![Discord.js](https://img.shields.io/badge/discord.js-v14-blue.svg)  
 ![Node.js](https://img.shields.io/badge/node-%3E%3D16-green.svg)  
 
