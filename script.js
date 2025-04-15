@@ -13,6 +13,8 @@ const schedule = require('node-schedule');
 const i18n = require('i18n');
 const Sentry = require('@sentry/node');
 const { ProfilingIntegration } = require('@sentry/profiling-node');
+const { HttpsProxyAgent } = require('https-proxy-agent');
+const { HttpsProxyAgent } = require('https-proxy-agent');
 require('dotenv').config();
 
 // ==================== Configuração Inicial ====================
@@ -78,6 +80,12 @@ class ConfigManager {
   constructor() {
     this.db = new QuickDB();
     this.configSchema = {
+      MAX_RECONNECT_ATTEMPTS: { type: 'number', default: 5, min: 1, max: 20 },
+      INITIAL_RECONNECT_DELAY_MS: { type: 'number', default: 5000, min: 1000, max: 30000 },
+      MAX_RECONNECT_DELAY_MS: { type: 'number', default: 60000, min: 10000, max: 300000 },
+      REQUEST_THRESHOLD: { type: 'number', default: 30, min: 10, max: 100 },
+      TIME_WINDOW_MS: { type: 'number', default: 60000, min: 10000, max: 300000 },
+      BLOCK_DURATION_MS: { type: 'number', default: 3600000, min: 600000, max: 86400000 },
       TIMEOUT_DURATION: { type: 'duration', default: '2h', min: '1m', max: '7d' },
       MAX_MUTES_BEFORE_BAN: { type: 'number', default: 3, min: 1, max: 10 },
       MAX_JOIN_RATE: { type: 'number', default: 5, min: 1, max: 20 },
@@ -228,12 +236,21 @@ class PersistentData {
     this.userProfiles = this.db.table("userProfiles");
     this.guildSettings = this.db.table("guildSettings");
     this.twoFACodes = this.db.table("twoFACodes");
+    this.connectionHistory = this.db.table("connectionHistory");
   }
 
   /**
    * Initialize database and clean old data
    * @returns {Promise<void>}
    */
+  async logConnectionEvent(type, metadata = {}) {
+    await this.connectionHistory.set(Date.now().toString(), {
+      type,
+      timestamp: Date.now(),
+      ...metadata
+    });
+  }
+
   async initialize() {
     try {
       await this.cleanOldData();
@@ -1219,6 +1236,9 @@ async function generateDailyReport(guild) {
          `📅 ${new Date().toLocaleDateString()}`;
 }
 
+// ==================== SISTEMA DE PROTEÇÃO ====================
+// (As classes ConnectionManager, DDOSProtection, HealthMonitor e NetworkProtection vão aqui)
+
 // ==================== Inicialização do Bot ====================
 const config = new ConfigManager();
 const db = new PersistentData();
@@ -1258,6 +1278,16 @@ client.on('ready', async () => {
   try {
     await db.initialize();
     await pluginSystem.initAll();
+        const connectionManager = new ConnectionManager(client, db);
+    const ddosProtection = new DDOSProtection(db);
+    const healthMonitor = new HealthMonitor(client, db);
+    const networkProtection = new NetworkProtection(db);
+
+    connectionManager.setupListeners();
+    await networkProtection.configureClient(client);
+    networkProtection.setupAutoRotation();
+
+    dashboard.app.use(ddosProtection.middleware());
     dashboard.start();
     scheduleTasks();
   } catch (error) {
