@@ -1,6 +1,3 @@
----
-
-```markdown
 # 🧨 JJK RedenBOT - Bot de Segurança Avançada para Discord
 
 ![Licença](https://img.shields.io/github/license/viniprati/JJK-RedenBOT?label=License&logo=apache&logoColor=red&color=blue)
