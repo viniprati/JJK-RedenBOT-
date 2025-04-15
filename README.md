@@ -142,6 +142,4 @@ Todos os eventos críticos são registrados no canal `#anti-raid-logs`, incluind
 ## 📜 Licença
 
 Este projeto está licenciado sob a **Apache License 2.0**. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-```
-
 ---
